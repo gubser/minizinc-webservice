@@ -1,5 +1,23 @@
 # Dockerfile for building gecode and minizinc from source.
 
+Usage example:
+```
+$ docker build . -t minizinc
+$ docker run -it minizinc bash
+
+# apt-get install -y nano
+# nano army.mzn
+<insert army.mzn>
+# minizinc model.mzn
+F = 0, L = 392, Z=104, J = 0
+----------
+==========
+```
+
+(The source code for army.mzn is available from https://github.com/MiniZinc/specialization-examples/blob/master/introduction/army/army.mzn)
+
+TODO: What's missing is to make minizinc available as a web service.
+
 ## Additional files included in this repository
 To simplify creation of the Docker image, some archives have been added to this repository which have their own LICENSE files.
 

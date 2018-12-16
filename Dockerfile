@@ -28,7 +28,6 @@ ADD gecode.msc /usr/local/share/minizinc/solvers/
 ADD minizinc-gecode-2.2.3.tar.gz /usr/local/share/minizinc/
 
 # cleanup
+WORKDIR /
 RUN rm -r /src
 
-# done
-ENTRYPOINT ["minizinc"]
