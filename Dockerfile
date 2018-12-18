@@ -1,5 +1,13 @@
 FROM ubuntu:bionic AS build
-RUN apt-get update && apt-get install -y unzip cmake g++ libmpfr-dev bison flex
+RUN apt-get update && apt-get install -y \
+    cmake \
+    g++ \
+    libmpfr-dev \
+    bison \
+    flex \
+    python3 \
+    python3-pip && \
+    rm -rf /var/lib/apt/lists/*
 
 # build gecode
 WORKDIR /src
@@ -31,3 +39,9 @@ ADD minizinc-gecode-2.2.3.tar.gz /usr/local/share/minizinc/
 WORKDIR /
 RUN rm -r /src
 
+WORKDIR /opt/pymznweb
+ADD pymznweb/requirements.txt /opt/pymznweb/requirements.txt
+RUN pip3 install -r requirements.txt
+
+ADD pymznweb /opt/pymznweb
+CMD [ "python3", "server.py" ]
