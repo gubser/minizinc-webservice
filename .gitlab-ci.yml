@@ -1,0 +1,21 @@
+# Official docker image.
+image: docker:latest
+
+before_script:
+  - docker login -u "$CHASKI_REGISTRY_USER" -p "$CHASKI_REGISTRY_PASSWORD" $CHASKI_REGISTRY
+
+build-master:
+  stage: build
+  script:
+    - docker build --pull -t "$CHASKI_REGISTRY/chaski/minizinc-webservice" .
+    - docker push "$CHASKI_REGISTRY/chaski/minizinc-webservice"
+  only:
+    - master
+
+build:
+  stage: build
+  script:
+    - docker build --pull -t "$CHASKI_REGISTRY/chaski/minizinc-webservice:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CHASKI_REGISTRY/chaski/minizinc-webservice:$CI_COMMIT_REF_SLUG"
+  except:
+    - master
