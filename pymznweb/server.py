@@ -2,6 +2,7 @@ from aiohttp import web
 from typing import Dict
 import json
 import asyncio
+import time
 
 NUM_CONCURRENT_JOBS = 10
 TIMEOUT_MS = 30000
@@ -11,7 +12,9 @@ sem = asyncio.Semaphore(NUM_CONCURRENT_JOBS)
 
 async def handle(request: web.Request):
     try:
+        start_queue_time = time.time()
         await sem.acquire()
+        stop_queue_time = start_compute_time = time.time()
 
         # get json body
         req = await request.json()
@@ -44,11 +47,15 @@ async def handle(request: web.Request):
         # read output
         stdout, stderr = await proc.communicate(problem.encode())
         
+        stop_compute_time = time.time()
+
         # send back
         res = {
             'stdout': stdout.decode(),
             'stderr': stderr.decode(),
-            'returncode': proc.returncode
+            'returncode': proc.returncode,
+            'queue_time_ms': int((stop_queue_time - start_queue_time)*1000),
+            'compute_time_ms': int((stop_compute_time - start_compute_time)*1000)
         }
 
         return web.Response(text=json.dumps(res), content_type='application/json')
@@ -57,7 +64,7 @@ async def handle(request: web.Request):
 
 def main():
     app = web.Application()
-    app.add_routes([web.post('/', handle)])
+    app.router.add_post('/minizinc', handle)
 
     web.run_app(app)
 
