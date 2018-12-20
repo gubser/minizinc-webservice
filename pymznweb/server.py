@@ -29,16 +29,19 @@ STATUS_UNBOUNDED = 'unbounded'
 STATUS_UNKNOWN = 'unknown'
 STATUS_ERROR = 'error'
 STATUS_COMPLETE = 'complete'
+STATUS_FOUND = 'found'
 
 def interpret_minizinc_json_output(stdout: str):
     if MZ_SOLN_SEP in stdout:
         output, message = stdout.rsplit(MZ_SOLN_SEP, 1)
+        has_solution = True
     else:
         # if there is no solution at all, there is no MZ_SOLN_SEP
         # and therefore only look for message
         output = None
         message = stdout
-
+        has_solution = False
+    
     message = message.strip()
 
     if message == MZ_UNSAT_MSG:
@@ -53,6 +56,8 @@ def interpret_minizinc_json_output(stdout: str):
         return STATUS_ERROR, None
     elif message == MZ_COMPLETE_MSG:
         return STATUS_COMPLETE, json.loads(output)
+    elif message == '' and has_solution:
+        return STATUS_FOUND, json.loads(output)
     else:
         raise ValueError(f"unknown minizinc status message '{message}' to output '{output}'")
 

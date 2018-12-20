@@ -104,3 +104,18 @@ solve satisfy;
     assert resp.status == 200
     response = await resp.json()
     assert response['result'] == 'error'
+
+async def test_simple_satisfy(aiohttp_client, loop):
+    client = await aiohttp_client(create_app())
+
+    request = {
+        "problem": """
+constraint 1 = 1;
+solve satisfy;
+"""
+    }
+
+    resp = await client.post('/json', json=request)
+    assert resp.status == 200
+    response = await resp.json()
+    assert response['result'] == 'found'
