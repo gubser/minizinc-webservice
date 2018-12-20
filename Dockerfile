@@ -17,7 +17,7 @@ ADD gecode-6.1.0-source.tar.gz /src/
 
 WORKDIR /src/gecode-release-6.1.0
 RUN ./configure --disable-examples --disable-gist
-RUN make -j 4
+RUN make
 RUN make install
 
 # build minizinc
@@ -26,7 +26,7 @@ ADD libminizinc-2.2.3-source.tar.gz /src/
 
 WORKDIR /src/libminizinc-2.2.3/build
 RUN cmake -DGECODE_HOME="/src/gecode-release-6.1.0/gecode" ..
-RUN cmake --build . -- -j 4
+RUN cmake --build .
 RUN cmake --build . --target install
 
 # add auxiliary gecode and minizinc files
