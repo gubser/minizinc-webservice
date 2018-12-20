@@ -142,8 +142,8 @@ async def handle_json(request: web.Request):
 
         # send back
         res = {
-            'status': status,
-            'result': result,
+            'result': status,
+            'values': result,
             'stdout': stdout.decode(),
             'stderr': stderr.decode(),
             'returncode': proc.returncode,

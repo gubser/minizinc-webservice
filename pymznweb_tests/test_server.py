@@ -43,9 +43,9 @@ async def test_json(aiohttp_client, loop):
 
     print("response: ", response)
 
-    assert response['status'] == 'complete'
-    assert isinstance(response['result']['F'], int)
-    assert "_objective" in response['result']
+    assert response['result'] == 'complete'
+    assert isinstance(response['values']['F'], int)
+    assert "_objective" in response['values']
 
 async def test_time_limit_too_short(aiohttp_client, loop):
     client = await aiohttp_client(create_app())
@@ -62,7 +62,7 @@ async def test_time_limit_too_short(aiohttp_client, loop):
 
     print("response: ", response)
 
-    assert response['status'] == 'unknown'
+    assert response['result'] == 'unknown'
 
 async def test_unsatisfiable(aiohttp_client, loop):
     client = await aiohttp_client(create_app())
@@ -87,7 +87,7 @@ solve satisfy;
 
     print("response: ", response)
 
-    assert response['status'] == 'unsat'
+    assert response['result'] == 'unsat'
 
 async def test_unknown_data(aiohttp_client, loop):
     client = await aiohttp_client(create_app())
@@ -103,4 +103,4 @@ solve satisfy;
     resp = await client.post('/json', json=request)
     assert resp.status == 200
     response = await resp.json()
-    assert response['status'] == 'error'
+    assert response['result'] == 'error'
