@@ -49,5 +49,6 @@ RUN ldconfig
 
 # add server script
 ADD pymznweb /opt/pymznweb
-WORKDIR /opt/pymznweb
-CMD [ "python3", "server.py" ]
+WORKDIR /opt
+EXPOSE 80
+CMD [ "python3", "-m", "aiohttp.web", "-H", "*", "-P", "80", "pymznweb.server:init"]

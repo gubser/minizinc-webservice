@@ -7,7 +7,6 @@ import time
 NUM_CONCURRENT_JOBS = 10
 TIMEOUT_MS = 30000
 
-
 sem = asyncio.Semaphore(NUM_CONCURRENT_JOBS)
 
 async def handle(request: web.Request):
@@ -62,11 +61,9 @@ async def handle(request: web.Request):
     finally:
         sem.release()
 
-def main():
+def init(argv=None):
     app = web.Application()
     app.router.add_post('/minizinc', handle)
+    return app
 
-    web.run_app(app)
-
-if __name__ == "__main__":
-    main()
+# run it with: `python3 -m aiohttp.web pymznweb.server:init`
