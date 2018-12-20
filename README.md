@@ -3,10 +3,10 @@
 # Build & Run
 ```
 docker build . -t minizinc
-docker run -p 8080:80 minizinc
+docker run -p 5004:80 minizinc
 ```
 
-Then perform a POST request to http://localhost:8080/minizinc with the following body:
+Then perform a POST request to http://localhost:5004/minizinc with the following body:
 ```
 {
 	"problem": "int: budget;\nvar 0..1000: F;\nvar 0..400: L;\nvar 0..500: Z;\nvar 0..150: J;\n\nconstraint 13*F + 21*L + 17*Z + 100*J <= budget;\n\nsolve maximize 6*F + 10*L + 8*Z + 40*J;\n",
@@ -15,6 +15,13 @@ Then perform a POST request to http://localhost:8080/minizinc with the following
 	"timeout_ms": 10000
 }
 ```
+
+# Testing
+```
+docker build . -t minizinc && docker run --rm minizinc python3 -m pytest /opt
+```
+
+TODO: run a never ending script and check if timeout is respected
 
 
 # Shell-Only

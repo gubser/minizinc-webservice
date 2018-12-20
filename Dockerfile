@@ -39,7 +39,8 @@ ADD minizinc-gecode-2.2.3.tar.gz /usr/local/share/minizinc/
 FROM base AS runtime
 RUN apt-get update && apt-get install -y \
     python3 \
-    python3-aiohttp
+    python3-aiohttp \
+    python3-pytest
 
 # copy build results
 COPY --from=build /usr/local /usr/local
@@ -49,6 +50,7 @@ RUN ldconfig
 
 # add server script
 ADD pymznweb /opt/pymznweb
+ADD pymznweb_tests /opt/pymznweb_tests
 WORKDIR /opt
 EXPOSE 80
-CMD [ "python3", "-m", "aiohttp.web", "-H", "*", "-P", "80", "pymznweb.server:init"]
+CMD [ "python3", "-m", "aiohttp.web", "-H", "*", "-P", "80", "pymznweb.server:create_app"]
