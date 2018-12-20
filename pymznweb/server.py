@@ -29,8 +29,8 @@ async def handle(request: web.Request):
         else:
             extra_args = []
 
-        if 'timeout_ms' in req:
-            timeout_ms = req['timeout_ms']
+        if 'timeoutMs' in req:
+            timeout_ms = req['timeoutMs']
         else:
             timeout_ms = TIMEOUT_MS
 
@@ -53,8 +53,8 @@ async def handle(request: web.Request):
             'stdout': stdout.decode(),
             'stderr': stderr.decode(),
             'returncode': proc.returncode,
-            'queue_time_ms': int((stop_queue_time - start_queue_time)*1000),
-            'compute_time_ms': int((stop_compute_time - start_compute_time)*1000)
+            'queueTimeMs': int((stop_queue_time - start_queue_time)*1000),
+            'computeTimeMs': int((stop_compute_time - start_compute_time)*1000)
         }
 
         return web.Response(text=json.dumps(res), content_type='application/json')
