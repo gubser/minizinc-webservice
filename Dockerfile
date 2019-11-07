@@ -6,24 +6,29 @@ RUN apt-get update && apt-get install -y \
 #
 # build stage
 FROM base AS build
+ARG NUM_BUILD_JOBS=1
 RUN apt-get update && apt-get install -y \
     cmake \
     g++ \
     libmpfr-dev
 
-# build gecode
+# retrieve gecode and minizinc
+# (if you want to bump version, make sure you update
+# minizinc-gecode-2.2.3.tar.gz as well (see README.md))
 WORKDIR /src
-ADD gecode-6.1.0-source.tar.gz /src/
+ADD https://github.com/MiniZinc/libminizinc/archive/2.2.3.tar.gz libminizinc-2.2.3-source.tar.gz
+RUN tar -xf libminizinc-2.2.3-source.tar.gz
 
+ADD https://github.com/Gecode/gecode/archive/release-6.1.0.tar.gz gecode-6.1.0-source.tar.gz
+RUN tar -xf gecode-6.1.0-source.tar.gz
+
+# build gecode
 WORKDIR /src/gecode-release-6.1.0
 RUN ./configure --disable-examples --disable-gist
-RUN make
+RUN make -j ${NUM_BUILD_JOBS}
 RUN make install
 
 # build minizinc
-WORKDIR /src
-ADD libminizinc-2.2.3-source.tar.gz /src/
-
 WORKDIR /src/libminizinc-2.2.3/build
 RUN cmake -DGECODE_HOME="/src/gecode-release-6.1.0/gecode" ..
 RUN cmake --build .
